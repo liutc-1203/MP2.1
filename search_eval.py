@@ -35,7 +35,8 @@ def load_ranker(cfg_file):
     configuration file used to load the index. You can ignore this for MP2.
     """
     # return metapy.index.JelinekMercer()
-    return InL2Ranker(some_param=1.0)
+    # return InL2Ranker(some_param=1.0)
+    return metapy.index.OkapiBM25(k1=1.2,b=0.75,k3=500)
 
 if __name__ == '__main__':
     if len(sys.argv) != 2:
@@ -63,12 +64,16 @@ if __name__ == '__main__':
 
     query = metapy.index.Document()
     print('Running queries')
-    with open(query_path) as query_file:
-        for query_num, line in enumerate(query_file):
-            query.content(line.strip())
-            results = ranker.score(idx, query, top_k)
-            avg_p = ev.avg_p(results, query_start + query_num, top_k)
-            print("Query {} average precision: {}".format(query_num + 1, avg_p))
+    with open('bm25.avg_p.txt', 'w') as f:
+        with open(query_path) as query_file:
+            for query_num, line in enumerate(query_file):
+                query.content(line.strip())
+                results = ranker.score(idx, query, top_k)
+                avg_p = ev.avg_p(results, query_start + query_num, top_k)
+                f.write(str(avg_p))
+                f.write('\n')
+                # print("Query {} average precision: {}".format(query_num + 1, avg_p))
+    f.close()
             
 
     print("Mean average precision: {}".format(ev.map()))
