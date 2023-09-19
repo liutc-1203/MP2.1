@@ -21,7 +21,8 @@ class InL2Ranker(metapy.index.RankingFunction):
         @see https://meta-toolkit.org/doxygen/structmeta_1_1index_1_1score__data.html
         """
         tfn = sd.doc_term_count*math.log2(1+sd.avg_dl/abs(sd.num_docs))
-        one_term_score = sd.query_term_weight*(tfn/(tfn+self.param))*math.log2((sd.num_docs+1)/(sd.corpus_term_count+0.5))
+        log2 = math.log((sd.num_docs+1)/(sd.corpus_term_count+0.5), 2)
+        one_term_score = sd.query_term_weight*(tfn/(tfn+self.param))*log2
         # return (self.param + sd.doc_term_count) / (self.param * sd.doc_unique_terms + sd.doc_size)
         return one_term_score
 
@@ -68,6 +69,6 @@ if __name__ == '__main__':
             avg_p = ev.avg_p(results, query_start + query_num, top_k)
             print("Query {} average precision: {}".format(query_num + 1, avg_p))
             
-            
+
     print("Mean average precision: {}".format(ev.map()))
     print("Elapsed: {} seconds".format(round(time.time() - start_time, 4)))
