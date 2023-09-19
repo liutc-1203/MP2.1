@@ -67,5 +67,6 @@ if __name__ == '__main__':
             results = ranker.score(idx, query, top_k)
             avg_p = ev.avg_p(results, query_start + query_num, top_k)
             print("Query {} average precision: {}".format(query_num + 1, avg_p))
+            
     print("Mean average precision: {}".format(ev.map()))
     print("Elapsed: {} seconds".format(round(time.time() - start_time, 4)))
